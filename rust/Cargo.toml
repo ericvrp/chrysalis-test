@@ -1,0 +1,9 @@
+[package]
+edition = "2018"
+name = "chrysalis-test"
+publish = false
+version = "0.0.1"
+
+[dependencies]
+iota-core = {git = "https://github.com/iotaledger/iota.rs", branch = "dev"}
+tokio = {version = "1.5", features = ["full"]}

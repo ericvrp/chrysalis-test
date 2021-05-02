@@ -7,9 +7,9 @@ const client = new ClientBuilder()
 
 const main = async () => {
   const info = await client.getInfo();
-  console.log(new Date().toLocaleString(), info.nodeinfo);
+  console.log(new Date().toLocaleString(), info);
 
-  setTimeout(main, 10 * 1000);
+  // setTimeout(main, 10 * 1000);
 };
 
 main().then().catch(console.error);
