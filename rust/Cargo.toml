@@ -5,5 +5,6 @@ publish = false
 version = "0.0.1"
 
 [dependencies]
+dotenv_codegen = {version = "0.15.0"}
 iota-core = {git = "https://github.com/iotaledger/iota.rs", branch = "dev"}
 tokio = {version = "1.5", features = ["full"]}
