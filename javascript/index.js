@@ -9,6 +9,11 @@ if (process.env.IOTA_NODE) client = client.node(process.env.IOTA_NODE);
 client = client.build();
 
 //
+const sleep = async (ms = 1000) => {
+  return new Promise((r) => setTimeout(r, ms));
+};
+
+//
 const showBalances = async (seed, nAccounts = 2) => {
   for (let accountIndex = 0; accountIndex < nAccounts; accountIndex++) {
     client
@@ -20,7 +25,7 @@ const showBalances = async (seed, nAccounts = 2) => {
         if (!balance) return;
         console.log(`Balance of account #${accountIndex} is ${balance} IOTA`);
       })
-      .catch(console.error);
+      .catch((err) => console.error(err.message));
 
     client
       .getAddresses(seed)
@@ -43,7 +48,7 @@ const showBalances = async (seed, nAccounts = 2) => {
           });
         }
       })
-      .catch(console.error);
+      .catch((err) => console.error(err.message));
   }
 };
 
@@ -86,17 +91,51 @@ const dataSpam = async (spamMessageIndex = "BC030") => {
 };
 
 //
-const valueSpam = async (seed, spamMessageIndex = "BC030") => {
+const valueSpam = async (seed) => {
+  const testAccountIndex = 1;
   const testWalletAddress =
-    "iota1qrjqsakhe9fw4t0v84s04jglkf65zrt83h8vggmlxhg5fyq8du04k07dgk9";
-  const amount = 1000000;
+    "iota1qrjqsakhe9fw4t0v84s04jglkf65zrt83h8vggmlxhg5fyq8du04k07dgk9"; // test wallet
+  const allowanceAmount = 1000000; // 1Mi
 
-  const message = await client
+  const testWalletBalance = await client
+    .getBalance(seed)
+    .accountIndex(testAccountIndex)
+    .initialAddressIndex(0)
+    .get();
+
+  if (testWalletBalance === 0) {
+    const message = await client
+      .message()
+      .seed(seed)
+      .dustAllowanceOutput(testWalletAddress, allowanceAmount)
+      .submit();
+    console.log(
+      `https://explorer.iota.org/${process.env.IOTA_NETWORK}/message/${message.messageId} (allowance)`
+    );
+
+    while (
+      (await client
+        .getBalance(seed)
+        .accountIndex(testAccountIndex)
+        .initialAddressIndex(0)
+        .get()) === 0
+    )
+      console.log("Waiting for allowance to arrive");
+    await sleep(1000);
+  }
+
+  const amount = 1; // 1i
+  client
     .message()
     .seed(seed)
     .output(testWalletAddress, amount)
-    .submit();
-  console.log(message);
+    .submit()
+    .then((message) =>
+      console.log(
+        `https://explorer.iota.org/${process.env.IOTA_NETWORK}/message/${message.messageId} (1i transaction)`
+      )
+    )
+    .catch((err) => console.error(err.message));
 };
 
 //
@@ -117,11 +156,11 @@ const main = async () => {
 
   const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
 
-  //
-
   /*await*/ showBalances(seed);
-  /*await*/ dataSpam();
-  // /*await*/ valueSpam(seed);
+  // /*await*/ dataSpam();
+  /*await*/ valueSpam(seed);
 };
 
-main().then(/*() => console.log(`= = = The End = = =`)*/).catch(console.error);
+main()
+  .then((result) => result && console.log(result))
+  .catch((err) => console.error(err.message));
