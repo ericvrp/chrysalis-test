@@ -6,8 +6,8 @@ use iota::Client;
 
 #[tokio::main]
 async fn main() {
-    // let seed = dotenv!("IOTA_SEED");
-    // println!("{}", seed);
+    // let mnemonic = dotenv!("IOTA_MNEMONIC");
+    // println!("{}", mnemonic);
 
     const NETWORK: &str = "mainnet";
     const NODE: &str = "https://chrysalis-nodes.iota.org"; // "https://api.lb-0.testnet.chrysalis2.com"
