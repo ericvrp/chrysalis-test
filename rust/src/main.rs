@@ -9,31 +9,37 @@ async fn main() {
     // let seed = dotenv!("IOTA_SEED");
     // println!("{}", seed);
 
-    let message_index = "BC030";
-    let iterations = 1000000;
+    const NETWORK: &str = "mainnet";
+    const NODE: &str = "https://chrysalis-nodes.iota.org"; // "https://api.lb-0.testnet.chrysalis2.com"
 
     let iota = Client::builder() // Crate a client instance builder
-        .with_node("https://chrysalis-nodes.iota.org") // "https://api.lb-0.testnet.chrysalis2.com")
+        .with_network(NETWORK)
+        .with_node(NODE)
         .unwrap()
         .finish()
         .await
         .unwrap();
 
-    let info = iota.get_info().await.unwrap();
-    println!("messages_per_second {}", info.nodeinfo.messages_per_second);
+    // let info = iota.get_info().await.unwrap();
     // println!("{:#?}", info);
 
-    println!("Send {} messages", iterations);
+    const MESSAGE_INDEX: &str = "BC030";
+    let mut last_messages_per_second = 0.0;
 
-    println!(
-        "https://explorer.iota.org/mainnet/indexed/{}",
-        message_index
-    );
+    loop {
+        let info = iota.get_info().await.unwrap();
 
-    for iteration in 1..=iterations {
+        if last_messages_per_second != info.nodeinfo.messages_per_second {
+            last_messages_per_second = info.nodeinfo.messages_per_second;
+            println!(
+                "https://explorer.iota.org/{}/indexed/{} ({} MPS on {})",
+                NETWORK, MESSAGE_INDEX, last_messages_per_second, NETWORK
+            );
+        }
+
         let message = iota
             .message()
-            .with_index(message_index)
+            .with_index(MESSAGE_INDEX)
             .with_data("forever young".as_bytes().to_vec())
             .finish()
             .await
@@ -41,20 +47,11 @@ async fn main() {
         // println!("Message {:#?}", message);
         // println!("Message id {:#?}", message.id());
         println!(
-            "https://explorer.iota.org/mainnet/message/{}",
+            "https://explorer.iota.org/{}/message/{}",
+            NETWORK,
             message.id().0
         );
 
-        if iteration % 10 == 0 {
-            let info = iota.get_info().await.unwrap();
-            println!("messages_per_second {}", info.nodeinfo.messages_per_second);
-        }
-
         // sleep(Duration::from_millis(10 * 1000)).await;
     }
-
-    println!(
-        "https://explorer.iota.org/mainnet/indexed/{}",
-        message_index
-    );
 }
