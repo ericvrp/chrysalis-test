@@ -11,6 +11,13 @@ const client = new ClientBuilder().network(NETWORK).node(NODE).build();
 //
 const showBalances = async (nAccounts = 2) => {
   const mnemonic = process.env.IOTA_MNEMONIC;
+  if (!mnemonic || mnemonic.split(" ").length !== 24) {
+    console.warn(
+      "Skipping showBalances because IOTA_MNEMONIC is not 24 words as requried by the Chrysalis mainnet"
+    );
+    return;
+  }
+
   const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
 
   for (let account = 0; account < nAccounts; account++) {
