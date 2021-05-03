@@ -3,10 +3,10 @@ const { mnemonicToSeed } = require("bip39");
 const { ClientBuilder } = require("@iota/client"); // https://client-lib.docs.iota.org/libraries/nodejs
 
 //
-const NETWORK = "mainnet";
-const NODE = "https://chrysalis-nodes.iota.org";
-
-const client = new ClientBuilder().network(NETWORK).node(NODE).build();
+let client = new ClientBuilder();
+if (process.env.IOTA_NETWORK) client = client.network(process.env.IOTA_NETWORK);
+if (process.env.IOTA_NODE) client = client.node(process.env.IOTA_NODE);
+client = client.build();
 
 //
 const showBalances = async (nAccounts = 2) => {
@@ -20,16 +20,38 @@ const showBalances = async (nAccounts = 2) => {
 
   const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
 
-  for (let account = 0; account < nAccounts; account++) {
+  for (let accountIndex = 0; accountIndex < nAccounts; accountIndex++) {
     client
       .getBalance(seed)
-      .accountIndex(account)
+      .accountIndex(accountIndex)
       .initialAddressIndex(0)
       .get()
-      .then(
-        (balance) =>
-          balance && console.log(`Balance #${account} is ${balance} IOTA`)
-      )
+      .then(async (balance) => {
+        if (!balance) return;
+        console.log(`Balance of account #${accountIndex} is ${balance} IOTA`);
+      })
+      .catch(console.error);
+
+    client
+      .getAddresses(seed)
+      .accountIndex(accountIndex)
+      .range(0, 20)
+      .get()
+      .then((addresses) => {
+        for (const addressIndex in addresses) {
+          const address = addresses[addressIndex];
+          client.getAddressBalance(address).then((addressBalance) => {
+            if (!addressBalance?.balance) return;
+            console.log(
+              `Address #${addressIndex} of account #${accountIndex} has balance ${
+                addressBalance.balance
+              } (${
+                addressBalance.dust_allowed ? "dust allowed" : "no dust allowed"
+              })`
+            );
+          });
+        }
+      })
       .catch(console.error);
   }
 };
@@ -48,7 +70,7 @@ const dataSpam = async (spamMessageIndex = "BC030") => {
       ) {
         lastMessagesPerSecond = Math.round(info.nodeinfo.messagesPerSecond);
         console.log(
-          `https://explorer.iota.org/${NETWORK}/indexed/${spamMessageIndex} (${lastMessagesPerSecond} MPS)`
+          `https://explorer.iota.org/${process.env.IOTA_NETWORK}/indexed/${spamMessageIndex} (${lastMessagesPerSecond} MPS)`
         );
       }
     });
@@ -62,7 +84,7 @@ const dataSpam = async (spamMessageIndex = "BC030") => {
       .submit();
     nSpammedMessages++;
     console.log(
-      `https://explorer.iota.org/${NETWORK}/message/${
+      `https://explorer.iota.org/${process.env.IOTA_NETWORK}/message/${
         message.messageId
       } (spamming ${(
         (nSpammedMessages / (new Date() - startTime)) *
@@ -74,9 +96,14 @@ const dataSpam = async (spamMessageIndex = "BC030") => {
 
 //
 const main = async () => {
-  console.log("--- RESTART ---");
+  console.log(
+    `\n= = = Connected to ${
+      (await client.getInfo()).nodeinfo.networkId
+    } = = =\n`
+  );
+
   /*await*/ showBalances();
-  /*await*/ dataSpam();
+  // /*await*/ dataSpam();
   // /*await*/ valueSpam();
 };
 
