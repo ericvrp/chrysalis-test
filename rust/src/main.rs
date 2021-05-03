@@ -40,7 +40,7 @@ async fn main() {
         let message = iota
             .message()
             .with_index(MESSAGE_INDEX)
-            .with_data("forever young".as_bytes().to_vec())
+            .with_data("Hallo BC030 vanuit Rust!!!".as_bytes().to_vec())
             .finish()
             .await
             .unwrap();

@@ -15,42 +15,48 @@ const main = async () => {
 
   const client = new ClientBuilder().network(NETWORK).node(NODE).build();
 
-  // const seed1 = await mnemonicToEntropy(process.env.IOTA_MNEMONIC);
   const mnemonic = process.env.IOTA_MNEMONIC;
   const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
-  // console.log("seed", seed);
 
   for (let account = 0; account < N_ACCOUNTS; account++) {
-    const balance = await client
+    client
       .getBalance(seed)
       .accountIndex(account)
       .initialAddressIndex(0)
-      .get();
-    console.log(`balance #${account} is ${balance} IOTA`);
+      .get()
+      .then(
+        (balance) =>
+          balance && console.log(`Balance #${account} is ${balance} IOTA`)
+      )
+      .catch(console.error);
   }
 
   const MESSAGE_INDEX = "BC030";
-  let lastMessagesPerSecond = 0.0;
+  let lastMessagesPerSecond = 0;
 
   for (;;) {
-    const info = await client.getInfo();
-    if (lastMessagesPerSecond != info.nodeinfo.messagesPerSecond) {
-      lastMessagesPerSecond = info.nodeinfo.messagesPerSecond;
-      console.log(
-        `https://explorer.iota.org/${NETWORK}/indexed/${MESSAGE_INDEX} (${lastMessagesPerSecond} MPS on ${NETWORK})`
-      );
-    }
+    client.getInfo().then((info) => {
+      // console.log(info);
+      if (
+        lastMessagesPerSecond != Math.round(info.nodeinfo.messagesPerSecond)
+      ) {
+        lastMessagesPerSecond = Math.round(info.nodeinfo.messagesPerSecond);
+        console.log(
+          `https://explorer.iota.org/${NETWORK}/indexed/${MESSAGE_INDEX} (${lastMessagesPerSecond} MPS)`
+        );
+      }
+    });
 
     const message = await client
       .message()
       .index(MESSAGE_INDEX)
-      .data("Hallo BC030!!!")
+      .data(
+        `Hallo BC030 vanuit Javascript!!! (om ${new Date().toISOString()} bij ${lastMessagesPerSecond} MPS)`
+      )
       .submit();
     console.log(
       `https://explorer.iota.org/${NETWORK}/message/${message.messageId}`
     );
-
-    break;
   }
 
   // setTimeout(main, 10 * 1000);
