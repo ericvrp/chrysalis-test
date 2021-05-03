@@ -9,17 +9,7 @@ if (process.env.IOTA_NODE) client = client.node(process.env.IOTA_NODE);
 client = client.build();
 
 //
-const showBalances = async (nAccounts = 2) => {
-  const mnemonic = process.env.IOTA_MNEMONIC;
-  if (!mnemonic || mnemonic.split(" ").length !== 24) {
-    console.warn(
-      "Skipping showBalances because IOTA_MNEMONIC is not 24 words as requried by the Chrysalis mainnet"
-    );
-    return;
-  }
-
-  const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
-
+const showBalances = async (seed, nAccounts = 2) => {
   for (let accountIndex = 0; accountIndex < nAccounts; accountIndex++) {
     client
       .getBalance(seed)
@@ -36,6 +26,7 @@ const showBalances = async (nAccounts = 2) => {
       .getAddresses(seed)
       .accountIndex(accountIndex)
       .range(0, 20)
+      // .include_internal()
       .get()
       .then((addresses) => {
         for (const addressIndex in addresses) {
@@ -79,7 +70,7 @@ const dataSpam = async (spamMessageIndex = "BC030") => {
       .message()
       .index(spamMessageIndex)
       .data(
-        `Hallo BC030 vanuit Javascript!!! (om ${new Date().toISOString()} bij ${lastMessagesPerSecond} MPS)`
+        `Groeten aan BC030! (Transactie verstuurd om ${new Date().toISOString()} bij ${lastMessagesPerSecond} MPS)`
       )
       .submit();
     nSpammedMessages++;
@@ -95,6 +86,20 @@ const dataSpam = async (spamMessageIndex = "BC030") => {
 };
 
 //
+const valueSpam = async (seed, spamMessageIndex = "BC030") => {
+  const testWalletAddress =
+    "iota1qrjqsakhe9fw4t0v84s04jglkf65zrt83h8vggmlxhg5fyq8du04k07dgk9";
+  const amount = 1000000;
+
+  const message = await client
+    .message()
+    .seed(seed)
+    .output(testWalletAddress, amount)
+    .submit();
+  console.log(message);
+};
+
+//
 const main = async () => {
   console.log(
     `\n= = = Connected to ${
@@ -102,9 +107,21 @@ const main = async () => {
     } = = =\n`
   );
 
-  /*await*/ showBalances();
-  // /*await*/ dataSpam();
-  // /*await*/ valueSpam();
+  const mnemonic = process.env.IOTA_MNEMONIC;
+  if (!mnemonic || mnemonic.split(" ").length !== 24) {
+    console.warn(
+      "Skipping showBalances because IOTA_MNEMONIC is not 24 words as requried by the Chrysalis mainnet"
+    );
+    return;
+  }
+
+  const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
+
+  //
+
+  /*await*/ showBalances(seed);
+  /*await*/ dataSpam();
+  // /*await*/ valueSpam(seed);
 };
 
-main().then().catch(console.error);
+main().then(/*() => console.log(`= = = The End = = =`)*/).catch(console.error);
