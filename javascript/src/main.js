@@ -1,6 +1,7 @@
 require("dotenv").config({ path: "../.env" });
 const { mnemonicToSeed } = require("bip39");
 const { ClientBuilder } = require("@iota/client"); // https://client-lib.docs.iota.org/libraries/nodejs
+const { ONE_MIOTA, ONE_IOTA } = require("./constants");
 const { dustAllowanceConsolidator } = require("./dustAllowanceConsolidator");
 const { showBalances } = require("./showBalances");
 const { dataSpam } = require("./dataSpam");
@@ -29,10 +30,10 @@ const main = async () => {
 
   const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
 
-  /*await*/ dustAllowanceConsolidator(client, seed);
-  /*await*/ showBalances(client, seed);
-  // /*await*/ dataSpam(client);
-  /*await*/ valueSpam(client, seed);
+  dustAllowanceConsolidator(client, seed);
+  showBalances(client, seed);
+  // dataSpam(client);
+  valueSpam(client, seed);
 };
 
 main()

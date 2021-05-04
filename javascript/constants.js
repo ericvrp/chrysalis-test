@@ -1,6 +1,0 @@
-module.exports = {
-  ONE_IOTA: 1,
-  ONE_KIOTA: 1000,
-  ONE_MIOTA: 1000000,
-  ONE_GIOTA: 1000000000,
-};

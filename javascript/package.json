@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -q main.js",
+    "start": "nodemon -q src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
