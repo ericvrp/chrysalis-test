@@ -1,8 +1,4 @@
-const {
-  ONE_IOTA,
-  ADDRESS_WITH_ALLOWANCE,
-  VALUESPAM_REFRESH_INTERVAL,
-} = require("./constants");
+const { ONE_IOTA, VALUESPAM_REFRESH_INTERVAL } = require("./constants");
 const { sleep } = require("./utils");
 
 const valueSpam = async (client, seed, amount = ONE_IOTA) => {
@@ -10,7 +6,7 @@ const valueSpam = async (client, seed, amount = ONE_IOTA) => {
     client
       .message()
       .seed(seed)
-      .output(ADDRESS_WITH_ALLOWANCE, amount)
+      .output(process.env.IOTA_ADDRESS_WITH_ALLOWANCE, amount)
       .submit()
       .then(async (message) => {
         console.log(

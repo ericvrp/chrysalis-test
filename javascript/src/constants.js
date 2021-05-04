@@ -8,8 +8,4 @@ module.exports = {
   BALANCE_REFRESH_INTERVAL: 60 * 1000,
   GETINFO_REFRESH_INTERVAL: 60 * 1000,
   VALUESPAM_REFRESH_INTERVAL: 10 * 1000,
-
-  ADDRESS_WITH_ALLOWANCE:
-    "iota1qrjqsakhe9fw4t0v84s04jglkf65zrt83h8vggmlxhg5fyq8du04k07dgk9", // test wallet
-  ACCOUNTINDEX_WITH_ALLOWANCE: 1,
 };

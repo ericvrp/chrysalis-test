@@ -32,7 +32,7 @@ const main = async () => {
 
   dustAllowanceConsolidator(client, seed);
   showBalances(client, seed);
-  // dataSpam(client);
+  dataSpam(client);
   valueSpam(client, seed);
 };
 
