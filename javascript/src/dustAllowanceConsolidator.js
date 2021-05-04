@@ -31,39 +31,47 @@ const dustAllowanceConsolidator = async (
           .catch(console.error);
       }
 
-      const outputs = await client.findOutputs([], [ADDRESS_WITH_ALLOWANCE]);
-      const consolidateThresholdCount =
-        Math.min(
-          Math.floor(addressBalance.balance / ONE_MIOTA) *
-            10 *
-            consolidateThreshold,
-          100
-        ) + 1; // +1 for the original dust protection allowance
-      if (outputs.length >= consolidateThresholdCount) {
-        console.log("Consolidating allowance");
+      client
+        .findOutputs([], [ADDRESS_WITH_ALLOWANCE])
+        .then(async (outputs) => {
+          const consolidateThresholdCount =
+            Math.min(
+              Math.floor(addressBalance.balance / ONE_MIOTA) *
+                10 *
+                consolidateThreshold,
+              100
+            ) + 1; // +1 for the original dust protection allowance
 
-        let consolidateMessage = client
-          .message()
-          .seed(seed)
-          .accountIndex(ACCOUNTINDEX_WITH_ALLOWANCE);
-        for (const output of outputs) {
-          consolidateMessage = consolidateMessage.input(
-            output.transactionId,
-            output.outputIndex
-          );
-        }
-        consolidateMessage
-          .dustAllowanceOutput(ADDRESS_WITH_ALLOWANCE, addressBalance.balance)
-          .submit()
-          .then(() => console.log(`Consolidated allowance`))
-          .catch(console.error);
-      } else {
-        console.log(
-          `Still ${
-            consolidateThresholdCount - outputs.length
-          } outputs left before consolidation`
-        );
-      }
+          if (outputs.length >= consolidateThresholdCount) {
+            console.log("Consolidating allowance...");
+
+            let consolidateMessage = client
+              .message()
+              .seed(seed)
+              .accountIndex(ACCOUNTINDEX_WITH_ALLOWANCE);
+            for (const output of outputs) {
+              consolidateMessage = consolidateMessage.input(
+                output.transactionId,
+                output.outputIndex
+              );
+            }
+            consolidateMessage
+              .dustAllowanceOutput(
+                ADDRESS_WITH_ALLOWANCE,
+                addressBalance.balance
+              )
+              .submit()
+              .then(() => console.log(`Consolidated allowance`))
+              .catch(console.error);
+          } else {
+            console.log(
+              `Still ${
+                consolidateThresholdCount - outputs.length
+              } outputs left before consolidation`
+            );
+          }
+        })
+        .catch((err) => console.error(err.message));
     });
 
   setTimeout(
