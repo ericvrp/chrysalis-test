@@ -4,7 +4,8 @@ const dustAllowanceConsolidator = async (
   client,
   seed,
   allowance = ONE_MIOTA,
-  consolidateThreshold = 0.7
+  consolidateThreshold = 0.7,
+  forceConsolidation = true
 ) => {
   client
     .getAddressBalance(process.env.IOTA_ADDRESS_WITH_ALLOWANCE)
@@ -43,7 +44,10 @@ const dustAllowanceConsolidator = async (
               100
             ) + 1; // +1 for the original dust protection allowance
 
-          if (outputs.length >= consolidateThresholdCount) {
+          if (
+            forceConsolidation ||
+            outputs.length >= consolidateThresholdCount
+          ) {
             // console.log(
             //   `https://explorer.iota.org/mainnet/addr/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE} (consolidating allowance)`
             // );
@@ -91,7 +95,13 @@ const dustAllowanceConsolidator = async (
 
   setTimeout(
     () =>
-      dustAllowanceConsolidator(client, seed, allowance, consolidateThreshold),
+      dustAllowanceConsolidator(
+        client,
+        seed,
+        allowance,
+        consolidateThreshold,
+        false
+      ),
     DUSTALLOWANCE_REFRESH_INTERVAL
   );
 };
