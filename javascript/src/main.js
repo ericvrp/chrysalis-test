@@ -1,7 +1,7 @@
 require("dotenv").config({ path: "../.env" });
 const { mnemonicToSeed } = require("bip39");
 const { ClientBuilder } = require("@iota/client"); // https://client-lib.docs.iota.org/libraries/nodejs
-const { ONE_MIOTA, ONE_IOTA } = require("./constants");
+const { mqqt } = require("./mqqt");
 const { dustAllowanceConsolidator } = require("./dustAllowanceConsolidator");
 const { showBalances } = require("./showBalances");
 const { dataSpam } = require("./dataSpam");
@@ -19,6 +19,14 @@ const main = async () => {
       (await client.getInfo()).nodeinfo.networkId
     } = = =\n`
   );
+
+  if (process.env.IOTA_MQQT !== "true") {
+    console.warn(
+      "Skipping code that uses IOTA_MNEMONIC because it's not the required 24-words seedphrase"
+    );
+  } else {
+    mqqt(client);
+  }
 
   const mnemonic = process.env.IOTA_MNEMONIC;
   if (!mnemonic || mnemonic.split(" ").length !== 24) {
