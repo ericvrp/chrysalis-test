@@ -5,6 +5,8 @@ const valueSpam = async (client, seed, amount = ONE_IOTA) => {
   for (;;) {
     client
       .message()
+      .index(process.env.IOTA_MESSAGE_INDEX)
+      .data(`valueSpam ${amount}i @${new Date().toISOString()}`)
       .seed(seed)
       .output(process.env.IOTA_ADDRESS_WITH_ALLOWANCE, amount)
       .submit()

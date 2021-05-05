@@ -1,47 +1,58 @@
 const { GETINFO_REFRESH_INTERVAL } = require("./constants");
 
-const dataSpam = async (client, spamMessageIndex = "BC030") => {
+const dataSpam = async (client) => {
   let lastMessagesPerSecond = 0;
-
-  const startTime = new Date();
-  let nSpammedMessages = 0;
 
   const getInfo = async () => {
     // console.log("getInfo");
-    client.getInfo().then((info) => {
+
+    try {
+      const info = await client.getInfo();
       // console.log(info);
+
       if (
         lastMessagesPerSecond != Math.round(info.nodeinfo.messagesPerSecond)
       ) {
         lastMessagesPerSecond = Math.round(info.nodeinfo.messagesPerSecond);
         console.log(
-          `https://explorer.iota.org/${process.env.IOTA_NETWORK}/indexed/${spamMessageIndex} (${lastMessagesPerSecond} MPS)`
+          `https://explorer.iota.org/${process.env.IOTA_NETWORK}/indexed/${process.env.IOTA_MESSAGE_INDEX} (${lastMessagesPerSecond} MPS)`
         );
       }
-      setTimeout(getInfo, GETINFO_REFRESH_INTERVAL);
-    });
+    } catch (err) {
+      console.error(err.message);
+    }
+
+    setTimeout(getInfo, GETINFO_REFRESH_INTERVAL);
   };
-  getInfo();
+  await getInfo();
+
+  // console.log("dataSpam");
+  const startTime = new Date(); // start the clock once getInfo has finished
+  let nSpammedMessages = 0;
 
   for (;;) {
-    const message = await client
-      .message()
-      .index(spamMessageIndex)
-      .data(
-        `Groeten aan BC030! (Transactie verstuurd om ${new Date().toISOString()} bij ${lastMessagesPerSecond} MPS)`
-      )
-      .submit();
+    try {
+      const message = await client
+        .message()
+        .index(process.env.IOTA_MESSAGE_INDEX)
+        .data(
+          `dataSpam @${new Date().toISOString()} while ${lastMessagesPerSecond} MPS`
+        )
+        .submit();
 
-    nSpammedMessages++;
+      nSpammedMessages++;
 
-    console.log(
-      `https://explorer.iota.org/${process.env.IOTA_NETWORK}/message/${
-        message.messageId
-      } (spamming ${(
-        (nSpammedMessages / (new Date() - startTime)) *
-        1000
-      ).toFixed(2)} MPS data)`
-    );
+      console.log(
+        `https://explorer.iota.org/${process.env.IOTA_NETWORK}/message/${
+          message.messageId
+        } (spamming ${(
+          (nSpammedMessages / (new Date() - startTime)) *
+          1000
+        ).toFixed(2)} MPS data)`
+      );
+    } catch (err) {
+      console.error(err.message);
+    }
   }
 };
 

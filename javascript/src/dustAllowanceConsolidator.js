@@ -14,6 +14,12 @@ const dustAllowanceConsolidator = async (
       if (addressBalance.balance < allowance) {
         client
           .message()
+          .index(process.env.IOTA_MESSAGE_INDEX)
+          .data(
+            `add ${
+              allowance - addressBalance.balance
+            }i allowance @${new Date().toISOString()}`
+          )
           .seed(seed)
           .dustAllowanceOutput(
             process.env.IOTA_ADDRESS_WITH_ALLOWANCE,
@@ -38,12 +44,18 @@ const dustAllowanceConsolidator = async (
             ) + 1; // +1 for the original dust protection allowance
 
           if (outputs.length >= consolidateThresholdCount) {
-            console.log(
-              `https://explorer.iota.org/mainnet/addr/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE} (consolidating allowance)`
-            );
+            // console.log(
+            //   `https://explorer.iota.org/mainnet/addr/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE} (consolidating allowance)`
+            // );
 
             let consolidateMessage = client
               .message()
+              .index(process.env.IOTA_MESSAGE_INDEX)
+              .data(
+                `consolidate ${
+                  outputs.length
+                } outputs @${new Date().toISOString()}`
+              )
               .seed(seed)
               .accountIndex(
                 parseInt(process.env.IOTA_ACCOUNTINDEX_WITH_ALLOWANCE)

@@ -23,17 +23,38 @@ const main = async () => {
   const mnemonic = process.env.IOTA_MNEMONIC;
   if (!mnemonic || mnemonic.split(" ").length !== 24) {
     console.warn(
-      "Skipping showBalances because IOTA_MNEMONIC is not 24 words as requried by the Chrysalis mainnet"
+      "Skipping code that uses IOTA_MNEMONIC because it's not the required 24-words seedphrase"
     );
-    return;
+  } else {
+    const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
+    // console.log("seed1", seed);
+
+    // const seed2 = client.mnemonicToHexSeed(mnemonic);
+    // console.log("seed2", seed2);
+
+    if (
+      !process.env.IOTA_ADDRESS_WITH_ALLOWANCE ||
+      !process.env.IOTA_ACCOUNTINDEX_WITH_ALLOWANCE
+    ) {
+      console.warn("Skipping dustAllowanceConsolidator");
+    } else {
+      dustAllowanceConsolidator(client, seed);
+    }
+
+    showBalances(client, seed);
+
+    if (!process.env.IOTA_ADDRESS_WITH_ALLOWANCE) {
+      console.warn("Skipping valueSpam");
+    } else {
+      valueSpam(client, seed);
+    }
   }
 
-  const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
-
-  dustAllowanceConsolidator(client, seed);
-  showBalances(client, seed);
-  dataSpam(client);
-  valueSpam(client, seed);
+  if (process.env.IOTA_DATASPAM !== "true") {
+    console.warn("Skipping dataSpam");
+  } else {
+    dataSpam(client);
+  }
 };
 
 main()
