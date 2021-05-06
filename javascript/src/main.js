@@ -19,9 +19,7 @@ const main = async () => {
   // console.log(info);
 
   if (process.env.IOTA_MQQT !== "true") {
-    console.warn(
-      "Skipping code that uses IOTA_MNEMONIC because it's not the required 24-words seedphrase"
-    );
+    console.warn("Skipping MQTT");
   } else {
     mqqt(client);
   }
