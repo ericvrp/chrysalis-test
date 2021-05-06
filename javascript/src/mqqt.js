@@ -4,11 +4,11 @@
 const mqqt = async (client) => {
   const topics = [
     // `milestones/confirmed`,
-    // `milestones/latest`,
+    `milestones/latest`,
     // `addresses/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE}/outputs`,
-    `messages/indexation/${Buffer.from(process.env.IOTA_MESSAGE_INDEX).toString(
-      "hex"
-    )}`,
+    // `messages/indexation/${Buffer.from(process.env.IOTA_MESSAGE_INDEX).toString(
+    //   "hex"
+    // )}`,
   ];
   console.log("mqqt subscribes to topics", topics);
   client

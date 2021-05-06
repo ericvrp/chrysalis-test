@@ -14,11 +14,9 @@ const main = async () => {
   if (process.env.IOTA_NODE) client = client.node(process.env.IOTA_NODE);
   client = client.build();
 
-  console.log(
-    `\n= = = Connected to ${
-      (await client.getInfo()).nodeinfo.networkId
-    } = = =\n`
-  );
+  const info = await client.getInfo();
+  console.log(`\n= = = Connected to ${info.nodeinfo.networkId} = = =\n`);
+  // console.log(info);
 
   if (process.env.IOTA_MQQT !== "true") {
     console.warn(
@@ -51,7 +49,10 @@ const main = async () => {
 
     showBalances(client, seed);
 
-    if (!process.env.IOTA_ADDRESS_WITH_ALLOWANCE) {
+    if (
+      process.env.IOTA_VALUESPAM !== "true" ||
+      !process.env.IOTA_ADDRESS_WITH_ALLOWANCE
+    ) {
       console.warn("Skipping valueSpam");
     } else {
       valueSpam(client, seed);
