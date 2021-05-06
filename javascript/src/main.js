@@ -1,7 +1,7 @@
 require("dotenv").config({ path: "../.env" });
 const { mnemonicToSeed } = require("bip39");
 const { ClientBuilder } = require("@iota/client"); // https://client-lib.docs.iota.org/libraries/nodejs
-const { mqqt } = require("./mqqt");
+const { mqtt } = require("./mqtt");
 const { dustAllowanceConsolidator } = require("./dustAllowanceConsolidator");
 const { showBalances } = require("./showBalances");
 const { dataSpam } = require("./dataSpam");
@@ -18,10 +18,10 @@ const main = async () => {
   console.log(`\n= = = Connected to ${info.nodeinfo.networkId} = = =\n`);
   // console.log(info);
 
-  if (process.env.IOTA_MQQT !== "true") {
+  if (process.env.IOTA_MQTT !== "true") {
     console.warn("Skipping MQTT");
   } else {
-    mqqt(client);
+    mqtt(client);
   }
 
   const mnemonic = process.env.IOTA_MNEMONIC;

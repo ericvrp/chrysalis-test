@@ -42,7 +42,7 @@ const showBalances = async (
               for (const addressIndex in addresses) {
                 const address = addresses[addressIndex];
                 client.getAddressBalance(address).then((addressBalance) => {
-                  if (!addressBalance?.balance) return;
+                  if (!addressBalance.balance) return;
                   console.log(
                     `Address #${addressIndex} of account #${accountIndex} has balance ${
                       addressBalance.balance

@@ -1,7 +1,7 @@
 // https://client-lib.docs.iota.org/libraries/nodejs/examples.html#listening-to-mqtt
 // https://playground.asyncapi.io/?load=https://raw.githubusercontent.com/luca-moser/protocol-rfcs/rfc/node-event-api/text/0033-node-event-api/0033-node-event-api.yml
 
-const mqqt = async (client) => {
+const mqtt = async (client) => {
   const topics = [
     // `milestones/confirmed`,
     `milestones/latest`,
@@ -10,13 +10,13 @@ const mqqt = async (client) => {
     //   "hex"
     // )}`,
   ];
-  console.log("mqqt subscribes to topics", topics);
+  console.log("MQTT subscribes to topics", topics);
   client
     .subscriber()
     .topics(topics)
     .subscribe((err, data) => {
-      console.log("mqqt", JSON.stringify(data));
+      console.log("MQTT", JSON.stringify(data));
     });
 };
 
-module.exports = { mqqt };
+module.exports = { mqtt };
