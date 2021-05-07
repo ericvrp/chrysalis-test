@@ -2,6 +2,10 @@
 
 > rustup update stable
 
+# install build tools on Linux
+
+> apt install build-essential
+
 # run
 
 > cargo run

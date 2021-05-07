@@ -78,7 +78,7 @@ const dustAllowanceConsolidator = async (
               .submit()
               .then(() =>
                 console.log(
-                  `https://explorer.iota.org/mainnet/addr/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE}    (consolidated allowance)`
+                  `https://explorer.iota.org/mainnet/addr/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE}    (consolidated ${outputs.length} outputs)`
                 )
               )
               .catch(console.error);
