@@ -302,7 +302,7 @@ name = "chrysalis-test"
 version = "0.0.1"
 dependencies = [
  "dotenv_codegen",
- "iota-core",
+ "iota-client",
  "tokio",
 ]
 
@@ -859,14 +859,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "url",
-]
-
-[[package]]
-name = "iota-core"
-version = "0.2.0-alpha.3"
-source = "git+https://github.com/iotaledger/iota.rs?branch=dev#b257d0b7f5d40b1df3670454e84117208c244f3b"
-dependencies = [
- "iota-client",
 ]
 
 [[package]]
