@@ -6,6 +6,7 @@ const { dustAllowanceConsolidator } = require("./dustAllowanceConsolidator");
 const { showBalances } = require("./showBalances");
 const { dataSpam } = require("./dataSpam");
 const { valueSpam } = require("./valueSpam");
+const { N_ACCOUNTS } = require("./constants");
 
 const main = async () => {
   let client = new ClientBuilder();

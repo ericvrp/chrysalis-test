@@ -1,13 +1,25 @@
-const { BALANCE_REFRESH_INTERVAL } = require("./constants");
+const { BALANCE_REFRESH_INTERVAL, N_ACCOUNTS } = require("./constants");
 
 const showBalances = async (
   client,
   seed,
   balances = [],
-  nAccounts = 2,
+  nAccounts = N_ACCOUNTS,
   showDetails = false
 ) => {
   // console.log("showBalances");
+
+  // testnet faucet https://faucet.testnet.chrysalis2.com and https://faucet.tanglekit.de/
+  // if (showDetails) {
+  for (let accountIndex = 0; accountIndex < N_ACCOUNTS; accountIndex++) {
+    const addresses = await client
+      .getAddresses(seed)
+      .accountIndex(accountIndex)
+      .range(0, 1)
+      .get();
+    console.log(`Account #${accountIndex} starts with address ${addresses[0]}`);
+  }
+  // }
 
   let nBalancesKnown = 0;
   let balanceChanged = false;
@@ -44,7 +56,7 @@ const showBalances = async (
                 client.getAddressBalance(address).then((addressBalance) => {
                   if (!addressBalance.balance) return;
                   console.log(
-                    `Address #${addressIndex} of account #${accountIndex} has balance ${
+                    `Address #${addressIndex} of account #${accountIndex} (${address}) has balance ${
                       addressBalance.balance
                     } (${
                       addressBalance.dust_allowed
@@ -62,7 +74,7 @@ const showBalances = async (
   }
 
   setTimeout(
-    () => showBalances(client, seed, balances, nAccounts),
+    () => showBalances(client, seed, balances, nAccounts, false),
     BALANCE_REFRESH_INTERVAL
   );
 };
