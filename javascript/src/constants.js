@@ -12,11 +12,6 @@ module.exports = {
   ONE_MIOTA: 1000000,
   ONE_GIOTA: 1000000000,
 
-  CONSOLIDATOR_REFRESH_INTERVAL: 1 * MINUTE, // 60
-  SHOWBALANCE_REFRESH_INTERVAL: 5 * MINUTE, // 300
-  DATASPAM_GETINFO_REFRESH_INTERVAL: 2 * MINUTE, // 120
-  VALUESPAM_REFRESH_INTERVAL: 30 * SECOND, // 30
-
   NODE: {
     mainnet: "https://chrysalis-nodes.iota.org",
     testnet: "https://api.lb-0.testnet.chrysalis2.com",

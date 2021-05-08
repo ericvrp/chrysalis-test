@@ -1,6 +1,6 @@
 const {
+  SECOND,
   ONE_MIOTA,
-  CONSOLIDATOR_REFRESH_INTERVAL,
   MESSAGE_INDEX,
   ACCOUNTINDEX_WITH_ALLOWANCE,
   ADDRESS_WITH_ALLOWANCE,
@@ -106,7 +106,7 @@ const consolidator = async (
         consolidateThreshold,
         false
       ),
-    CONSOLIDATOR_REFRESH_INTERVAL
+    argv["consolidator-interval"] * SECOND
   );
 };
 

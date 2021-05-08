@@ -4,6 +4,7 @@ const { ClientBuilder } = require("@iota/client"); // https://client-lib.docs.io
 const { mqtt } = require("./mqtt");
 const { consolidator } = require("./consolidator");
 const { showBalances } = require("./showBalances");
+const { getInfo } = require("./getInfo");
 const { dataSpam } = require("./dataSpam");
 const { valueSpam } = require("./valueSpam");
 const { ACCOUNTINDEX_WITH_ALLOWANCE, NODE } = require("./constants");
@@ -15,7 +16,9 @@ const argv = require("yargs/yargs")(process.argv.slice(2)) // https://yargs.js.o
   .default("valuespam", true)
   .default("valuespam-interval", 30)
   .default("dataspam", true)
-  .default("dataspam-getinfo-interval", 120)
+  .default("dataspam-interval", 0)
+  .default("getinfo", true)
+  .default("getinfo-interval", 120)
   .default("consolidator", true)
   .default("consolidator-interval", 60)
   .default("network", "mainnet").argv;
@@ -54,6 +57,10 @@ const main = async () => {
 
   if (argv.dataspam) {
     dataSpam(argv, client);
+  }
+
+  if (argv.getinfo) {
+    getInfo(argv, client);
   }
 
   if (argv.mqtt) {

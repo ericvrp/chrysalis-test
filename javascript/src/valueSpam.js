@@ -1,6 +1,6 @@
 const {
+  SECOND,
   ONE_IOTA,
-  VALUESPAM_REFRESH_INTERVAL,
   MESSAGE_INDEX,
   ADDRESS_WITH_ALLOWANCE,
 } = require("./constants");
@@ -22,7 +22,7 @@ const valueSpam = async (argv, client, seed, amount = ONE_IOTA) => {
       })
       .catch((err) => console.error(err.message));
 
-    await sleep(VALUESPAM_REFRESH_INTERVAL);
+    await sleep(argv["valuespam-interval"] * SECOND);
   }
 };
 

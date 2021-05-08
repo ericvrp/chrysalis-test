@@ -1,34 +1,7 @@
-const {
-  DATASPAM_GETINFO_REFRESH_INTERVAL,
-  MESSAGE_INDEX,
-} = require("./constants");
+const { SECOND, MESSAGE_INDEX } = require("./constants");
+const { sleep } = require("./utils");
 
 const dataSpam = async (argv, client) => {
-  let lastMessagesPerSecond = 0;
-
-  const getInfo = async () => {
-    // console.log("getInfo");
-
-    try {
-      const info = await client.getInfo();
-      // console.log(info);
-
-      if (
-        lastMessagesPerSecond != Math.round(info.nodeinfo.messagesPerSecond)
-      ) {
-        lastMessagesPerSecond = Math.round(info.nodeinfo.messagesPerSecond);
-        console.log(
-          `https://explorer.iota.org/${argv.network}/indexed/${MESSAGE_INDEX} (${lastMessagesPerSecond} MPS)`
-        );
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
-
-    setTimeout(getInfo, DATASPAM_GETINFO_REFRESH_INTERVAL);
-  };
-  await getInfo();
-
   // console.log("dataSpam");
   const startTime = new Date(); // start the clock once getInfo has finished
   let nSpammedMessages = 0;
@@ -38,9 +11,7 @@ const dataSpam = async (argv, client) => {
       const message = await client
         .message()
         .index(MESSAGE_INDEX)
-        .data(
-          `dataSpam @${new Date().toISOString()} while ${lastMessagesPerSecond} MPS`
-        )
+        .data(`dataSpam @${new Date().toISOString()}`)
         .submit();
 
       nSpammedMessages++;
@@ -53,6 +24,8 @@ const dataSpam = async (argv, client) => {
           1000
         ).toFixed(2)} MPS data)`
       );
+
+      await sleep(argv["dataspam-interval"] * SECOND);
     } catch (err) {
       console.error(err.message);
     }
