@@ -7,21 +7,24 @@ const { showBalances } = require("./showBalances");
 const { getInfo } = require("./getInfo");
 const { dataSpam } = require("./dataSpam");
 const { valueSpam } = require("./valueSpam");
-const { ACCOUNTINDEX_WITH_ALLOWANCE, NODE } = require("./constants");
+const { NODE } = require("./constants");
 
 const argv = require("yargs/yargs")(process.argv.slice(2)) // https://yargs.js.org and https://github.com/yargs/yargs/blob/master/docs/examples.md
   .default("mqtt", true)
   .default("showbalances", true)
   .default("showbalances-interval", 300)
   .default("valuespam", true)
-  .default("valuespam-interval", 30)
+  .default("valuespam-interval", 10)
   .default("dataspam", true)
   .default("dataspam-interval", 0)
   .default("getinfo", true)
   .default("getinfo-interval", 120)
   .default("consolidator", true)
   .default("consolidator-interval", 60)
-  .default("network", "mainnet").argv;
+  .default("network", "mainnet")
+  .default("messageIndex", "chrysalis-test")
+  .default("accountIndexWithDustAllowance", 1)
+  .default("nAccounts", 2).argv;
 // console.log(argv); // --help
 
 //

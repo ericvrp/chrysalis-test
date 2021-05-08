@@ -1,5 +1,4 @@
-const { SECOND, MESSAGE_INDEX } = require("./constants");
-const { sleep, throttle } = require("./utils");
+const { sleepSeconds, throttle } = require("./utils");
 
 const dataSpam = async (argv, client) => {
   const startTime = new Date(); // start the clock once getInfo has finished
@@ -9,7 +8,7 @@ const dataSpam = async (argv, client) => {
     try {
       const message = await client
         .message()
-        .index(MESSAGE_INDEX)
+        .index(argv.messageIndex)
         .data(`dataSpam @${new Date().toISOString()}`)
         .submit();
 
@@ -28,7 +27,7 @@ const dataSpam = async (argv, client) => {
       await throttle();
     }
 
-    await sleep(argv["dataspam-interval"] * SECOND);
+    await sleepSeconds(argv["dataspam-interval"]);
   }
 };
 

@@ -1,12 +1,15 @@
-const { SECOND } = require("./constants");
-
-const sleep = async (delayInMs = SECOND) => {
+const sleep = async (delayInMs) => {
   // if (delayInMs > 0) console.log(`sleep ${delayInMs}ms`);
   return new Promise((r) => setTimeout(r, delayInMs));
 };
 
-const throttle = async () => {
-  return sleep(10 * SECOND);
+const sleepSeconds = async (delayInSeconds) => {
+  // if (delayInSeconds > 0) console.log(`sleepSeconds ${delayInSeconds}s`);
+  return sleep(delayInSeconds * 1000);
 };
 
-module.exports = { sleep, throttle };
+const throttle = async () => {
+  return sleepSeconds(10); // blocktime
+};
+
+module.exports = { sleep, sleepSeconds, throttle };

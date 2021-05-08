@@ -1,18 +1,16 @@
-const { SECOND, N_ACCOUNTS } = require("./constants");
-const { sleep, throttle } = require("./utils");
+const { sleepSeconds, throttle } = require("./utils");
 
 const showBalances = async (
   argv,
   client,
   seed,
   balances = [],
-  nAccounts = N_ACCOUNTS,
   showDetails = false
 ) => {
   // console.log("showBalances");
 
   // testnet faucet https://faucet.testnet.chrysalis2.com and https://faucet.tanglekit.de/
-  for (let accountIndex = 0; accountIndex < N_ACCOUNTS; accountIndex++) {
+  for (let accountIndex = 0; accountIndex < argv.nAccounts; accountIndex++) {
     const addresses = await client
       .getAddresses(seed)
       .accountIndex(accountIndex)
@@ -25,7 +23,11 @@ const showBalances = async (
     try {
       let balanceChanged = false;
 
-      for (let accountIndex = 0; accountIndex < nAccounts; accountIndex++) {
+      for (
+        let accountIndex = 0;
+        accountIndex < argv.nAccounts;
+        accountIndex++
+      ) {
         const balance = await client
           .getBalance(seed)
           .accountIndex(accountIndex)
@@ -74,7 +76,7 @@ const showBalances = async (
       await throttle();
     }
 
-    await sleep(argv["showbalances-interval"] * SECOND);
+    await sleepSeconds(argv["showbalances-interval"]);
   }
 };
 

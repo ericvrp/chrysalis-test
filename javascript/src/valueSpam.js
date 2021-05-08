@@ -1,17 +1,12 @@
-const {
-  SECOND,
-  ONE_IOTA,
-  MESSAGE_INDEX,
-  ADDRESS_WITH_ALLOWANCE,
-} = require("./constants");
-const { sleep, throttle } = require("./utils");
+const { ONE_IOTA, ADDRESS_WITH_ALLOWANCE } = require("./constants");
+const { sleepSeconds, throttle } = require("./utils");
 
 const valueSpam = async (argv, client, seed, amount = ONE_IOTA) => {
   for (;;) {
     try {
       const message = await client
         .message()
-        .index(MESSAGE_INDEX)
+        .index(argv.messageIndex)
         .data(`valueSpam ${amount}i @${new Date().toISOString()}`)
         .seed(seed)
         .output(ADDRESS_WITH_ALLOWANCE[argv.network], amount)
@@ -25,7 +20,7 @@ const valueSpam = async (argv, client, seed, amount = ONE_IOTA) => {
       await throttle();
     }
 
-    await sleep(argv["valuespam-interval"] * SECOND);
+    await sleepSeconds(argv["valuespam-interval"]);
   }
 };
 

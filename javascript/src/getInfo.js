@@ -1,5 +1,4 @@
-const { SECOND, MESSAGE_INDEX } = require("./constants");
-const { sleep, throttle } = require("./utils");
+const { sleepSeconds, throttle } = require("./utils");
 
 const getInfo = async (argv, client) => {
   for (;;) {
@@ -8,14 +7,14 @@ const getInfo = async (argv, client) => {
       // console.log(info);
 
       console.log(
-        `https://explorer.iota.org/${argv.network}/indexed/${MESSAGE_INDEX} (${info.nodeinfo.messagesPerSecond} MPS)`
+        `https://explorer.iota.org/${argv.network}/indexed/${argv.messageIndex} (${info.nodeinfo.messagesPerSecond} MPS)`
       );
     } catch (err) {
       console.error(err.message);
       await throttle();
     }
 
-    await sleep(argv["getinfo-interval"] * SECOND);
+    await sleepSeconds(argv["getinfo-interval"]);
   }
 };
 

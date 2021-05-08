@@ -1,11 +1,5 @@
-const {
-  SECOND,
-  ONE_MIOTA,
-  MESSAGE_INDEX,
-  ACCOUNTINDEX_WITH_ALLOWANCE,
-  ADDRESS_WITH_ALLOWANCE,
-} = require("./constants");
-const { sleep, throttle } = require("./utils");
+const { ONE_MIOTA, ADDRESS_WITH_ALLOWANCE } = require("./constants");
+const { sleepSeconds, throttle } = require("./utils");
 
 const consolidator = async (
   argv,
@@ -18,7 +12,7 @@ const consolidator = async (
   // console.log("consolidator");
   const addressWithAllowance = ADDRESS_WITH_ALLOWANCE[argv.network];
 
-  for (;;) {
+  for (; ; forceConsolidation = false) {
     try {
       const addressBalance = await client.getAddressBalance(
         addressWithAllowance
@@ -28,7 +22,7 @@ const consolidator = async (
       if (addressBalance.balance < allowance) {
         await client
           .message()
-          .index(MESSAGE_INDEX)
+          .index(argv.messageIndex)
           .data(
             `add ${
               allowance - addressBalance.balance
@@ -64,12 +58,12 @@ const consolidator = async (
 
         let consolidateMessage = client
           .message()
-          .index(MESSAGE_INDEX)
+          .index(argv.messageIndex)
           .data(
             `consolidate ${outputs.length} outputs @${new Date().toISOString()}`
           )
           .seed(seed)
-          .accountIndex(parseInt(ACCOUNTINDEX_WITH_ALLOWANCE));
+          .accountIndex(parseInt(argv.accountIndexWithDustAllowance));
         for (const output of outputs) {
           consolidateMessage = consolidateMessage.input(
             output.transactionId,
@@ -95,7 +89,7 @@ const consolidator = async (
       await throttle();
     }
 
-    await sleep(argv["consolidator-interval"] * SECOND);
+    await sleepSeconds(argv["consolidator-interval"]);
   }
 };
 

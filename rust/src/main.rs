@@ -23,7 +23,7 @@ async fn main() {
     // let info = iota.get_info().await.unwrap();
     // println!("{:#?}", info);
 
-    const MESSAGE_INDEX: &str = "BC030";
+    const MESSAGE_INDEX: &str = "chrysalis-test";
     let mut last_messages_per_second = 0.0;
 
     loop {
@@ -40,7 +40,7 @@ async fn main() {
         let message = iota
             .message()
             .with_index(MESSAGE_INDEX)
-            .with_data("Hallo BC030 vanuit Rust!!!".as_bytes().to_vec())
+            .with_data("Hi chrysalis-test from Rust!!!".as_bytes().to_vec())
             .finish()
             .await
             .unwrap();
