@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "help": "node src/main.js --help",
-    "start": "nodemon -q src/main.js --no-mqtt",
-    "dataspam": "nodemon -q src/main.js  --no-mqtt --no-valuespam --no-getinfo --no-showbalances --dataspam-interval 0 --no-consolidator",
-    "valuespam": "nodemon -q src/main.js --no-mqtt --no-dataspam --no-getinfo --no-showbalances --valuespam-interval 0",
-    "consolidator": "nodemon -q src/main.js --no-mqtt --no-dataspam --no-getinfo --no-showbalances --no-valuespam",
+    "start": "nodemon        -q src/main.js",
+    "dataspam": "nodemon     -q src/main.js --no-mqtt --no-valuespam --no-getinfo --no-showbalances --no-consolidator --dataspam-interval=0",
+    "valuespam": "nodemon    -q src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-consolidator --valuespam-interval=0",
+    "consolidator": "nodemon -q src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-valuespam",
+    "other": "nodemon -q src/main.js --no-dataspam --no-getinfo --no-valuespam --no-consolidator",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

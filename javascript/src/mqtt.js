@@ -12,11 +12,19 @@ const mqtt = async (argv, client) => {
     //   "hex"
     // )}`,
   ];
-  console.log("MQTT subscribes to topics", topics);
+  // console.log("MQTT subscribes to topics", topics);
+
+  const lastTopicPayload = {};
+
   client
     .subscriber()
     .topics(topics)
     .subscribe((err, data) => {
+      if (err) return console.error(err.message);
+
+      if (lastTopicPayload[data.payload] === data.payload) return;
+
+      lastTopicPayload[data.payload] = data.payload;
       console.log("MQTT", JSON.stringify(data));
     });
 };

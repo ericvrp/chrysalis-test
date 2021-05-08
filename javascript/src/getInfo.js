@@ -1,20 +1,22 @@
 const { SECOND, MESSAGE_INDEX } = require("./constants");
+const { sleep, throttle } = require("./utils");
 
 const getInfo = async (argv, client) => {
-  // console.log("getInfo");
+  for (;;) {
+    try {
+      const info = await client.getInfo();
+      // console.log(info);
 
-  try {
-    const info = await client.getInfo();
-    // console.log(info);
+      console.log(
+        `https://explorer.iota.org/${argv.network}/indexed/${MESSAGE_INDEX} (${info.nodeinfo.messagesPerSecond} MPS)`
+      );
+    } catch (err) {
+      console.error(err.message);
+      await throttle();
+    }
 
-    console.log(
-      `https://explorer.iota.org/${argv.network}/indexed/${MESSAGE_INDEX} (${info.nodeinfo.messagesPerSecond} MPS)`
-    );
-  } catch (err) {
-    console.error(err.message);
+    await sleep(argv["getinfo-interval"] * SECOND);
   }
-
-  setTimeout(getInfo, argv["getinfo-interval"] * SECOND);
 };
 
 module.exports = { getInfo };

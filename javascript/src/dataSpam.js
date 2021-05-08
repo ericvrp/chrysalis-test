@@ -1,8 +1,7 @@
 const { SECOND, MESSAGE_INDEX } = require("./constants");
-const { sleep } = require("./utils");
+const { sleep, throttle } = require("./utils");
 
 const dataSpam = async (argv, client) => {
-  // console.log("dataSpam");
   const startTime = new Date(); // start the clock once getInfo has finished
   let nSpammedMessages = 0;
 
@@ -24,11 +23,12 @@ const dataSpam = async (argv, client) => {
           1000
         ).toFixed(2)} MPS data)`
       );
-
-      await sleep(argv["dataspam-interval"] * SECOND);
     } catch (err) {
       console.error(err.message);
+      await throttle();
     }
+
+    await sleep(argv["dataspam-interval"] * SECOND);
   }
 };
 
