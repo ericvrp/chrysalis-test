@@ -1,4 +1,7 @@
-const { GETINFO_REFRESH_INTERVAL, MESSAGE_INDEX } = require("./constants");
+const {
+  DATASPAM_GETINFO_REFRESH_INTERVAL,
+  MESSAGE_INDEX,
+} = require("./constants");
 
 const dataSpam = async (argv, client) => {
   let lastMessagesPerSecond = 0;
@@ -22,7 +25,7 @@ const dataSpam = async (argv, client) => {
       console.error(err.message);
     }
 
-    setTimeout(getInfo, GETINFO_REFRESH_INTERVAL);
+    setTimeout(getInfo, DATASPAM_GETINFO_REFRESH_INTERVAL);
   };
   await getInfo();
 

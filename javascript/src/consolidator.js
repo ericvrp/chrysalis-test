@@ -1,12 +1,12 @@
 const {
   ONE_MIOTA,
-  DUSTALLOWANCE_REFRESH_INTERVAL,
+  CONSOLIDATOR_REFRESH_INTERVAL,
   MESSAGE_INDEX,
   ACCOUNTINDEX_WITH_ALLOWANCE,
   ADDRESS_WITH_ALLOWANCE,
 } = require("./constants");
 
-const dustAllowanceConsolidator = async (
+const consolidator = async (
   argv,
   client,
   seed,
@@ -106,8 +106,8 @@ const dustAllowanceConsolidator = async (
         consolidateThreshold,
         false
       ),
-    DUSTALLOWANCE_REFRESH_INTERVAL
+    CONSOLIDATOR_REFRESH_INTERVAL
   );
 };
 
-module.exports = { dustAllowanceConsolidator };
+module.exports = { consolidator };

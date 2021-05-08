@@ -1,4 +1,4 @@
-const { BALANCE_REFRESH_INTERVAL, N_ACCOUNTS } = require("./constants");
+const { SHOWBALANCE_REFRESH_INTERVAL, N_ACCOUNTS } = require("./constants");
 
 const showBalances = async (
   argv,
@@ -76,7 +76,7 @@ const showBalances = async (
 
   setTimeout(
     () => showBalances(client, seed, balances, nAccounts, false),
-    BALANCE_REFRESH_INTERVAL
+    SHOWBALANCE_REFRESH_INTERVAL
   );
 };
 
