@@ -1,21 +1,30 @@
-const { ONE_MIOTA, DUSTALLOWANCE_REFRESH_INTERVAL } = require("./constants");
+const {
+  ONE_MIOTA,
+  DUSTALLOWANCE_REFRESH_INTERVAL,
+  MESSAGE_INDEX,
+  ACCOUNTINDEX_WITH_ALLOWANCE,
+  ADDRESS_WITH_ALLOWANCE,
+} = require("./constants");
 
 const dustAllowanceConsolidator = async (
+  argv,
   client,
   seed,
   allowance = ONE_MIOTA,
   consolidateThreshold = 0.7,
   forceConsolidation = true
 ) => {
+  const addressWithAllowance = ADDRESS_WITH_ALLOWANCE[argv.network];
+
   client
-    .getAddressBalance(process.env.IOTA_ADDRESS_WITH_ALLOWANCE)
+    .getAddressBalance(addressWithAllowance)
     .then(async (addressBalance) => {
       // console.log(addressBalance);
 
       if (addressBalance.balance < allowance) {
         client
           .message()
-          .index(process.env.IOTA_MESSAGE_INDEX)
+          .index(MESSAGE_INDEX)
           .data(
             `add ${
               allowance - addressBalance.balance
@@ -23,7 +32,7 @@ const dustAllowanceConsolidator = async (
           )
           .seed(seed)
           .dustAllowanceOutput(
-            process.env.IOTA_ADDRESS_WITH_ALLOWANCE,
+            addressWithAllowance,
             allowance - addressBalance.balance
           )
           .submit()
@@ -34,7 +43,7 @@ const dustAllowanceConsolidator = async (
       }
 
       client
-        .findOutputs([], [process.env.IOTA_ADDRESS_WITH_ALLOWANCE])
+        .findOutputs([], [addressWithAllowance])
         .then(async (outputs) => {
           const consolidateThresholdCount =
             Math.min(
@@ -49,21 +58,19 @@ const dustAllowanceConsolidator = async (
             outputs.length >= consolidateThresholdCount
           ) {
             // console.log(
-            //   `https://explorer.iota.org/mainnet/addr/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE} (consolidating allowance)`
+            //   `https://explorer.iota.org/mainnet/addr/${addressWithAllowance} (consolidating allowance)`
             // );
 
             let consolidateMessage = client
               .message()
-              .index(process.env.IOTA_MESSAGE_INDEX)
+              .index(MESSAGE_INDEX)
               .data(
                 `consolidate ${
                   outputs.length
                 } outputs @${new Date().toISOString()}`
               )
               .seed(seed)
-              .accountIndex(
-                parseInt(process.env.IOTA_ACCOUNTINDEX_WITH_ALLOWANCE)
-              );
+              .accountIndex(parseInt(ACCOUNTINDEX_WITH_ALLOWANCE));
             for (const output of outputs) {
               consolidateMessage = consolidateMessage.input(
                 output.transactionId,
@@ -71,14 +78,11 @@ const dustAllowanceConsolidator = async (
               );
             }
             consolidateMessage
-              .dustAllowanceOutput(
-                process.env.IOTA_ADDRESS_WITH_ALLOWANCE,
-                addressBalance.balance
-              )
+              .dustAllowanceOutput(addressWithAllowance, addressBalance.balance)
               .submit()
               .then(() =>
                 console.log(
-                  `https://explorer.iota.org/mainnet/addr/${process.env.IOTA_ADDRESS_WITH_ALLOWANCE}    (consolidated ${outputs.length} outputs)`
+                  `https://explorer.iota.org/mainnet/addr/${addressWithAllowance}    (consolidated ${outputs.length} outputs)`
                 )
               )
               .catch(console.error);

@@ -1,6 +1,6 @@
-const { GETINFO_REFRESH_INTERVAL } = require("./constants");
+const { GETINFO_REFRESH_INTERVAL, MESSAGE_INDEX } = require("./constants");
 
-const dataSpam = async (client) => {
+const dataSpam = async (argv, client) => {
   let lastMessagesPerSecond = 0;
 
   const getInfo = async () => {
@@ -15,7 +15,7 @@ const dataSpam = async (client) => {
       ) {
         lastMessagesPerSecond = Math.round(info.nodeinfo.messagesPerSecond);
         console.log(
-          `https://explorer.iota.org/${process.env.IOTA_NETWORK}/indexed/${process.env.IOTA_MESSAGE_INDEX} (${lastMessagesPerSecond} MPS)`
+          `https://explorer.iota.org/${argv.network}/indexed/${MESSAGE_INDEX} (${lastMessagesPerSecond} MPS)`
         );
       }
     } catch (err) {
@@ -34,7 +34,7 @@ const dataSpam = async (client) => {
     try {
       const message = await client
         .message()
-        .index(process.env.IOTA_MESSAGE_INDEX)
+        .index(MESSAGE_INDEX)
         .data(
           `dataSpam @${new Date().toISOString()} while ${lastMessagesPerSecond} MPS`
         )
@@ -43,7 +43,7 @@ const dataSpam = async (client) => {
       nSpammedMessages++;
 
       console.log(
-        `https://explorer.iota.org/${process.env.IOTA_NETWORK}/message/${
+        `https://explorer.iota.org/${argv.network}/message/${
           message.messageId
         } (spamming ${(
           (nSpammedMessages / (new Date() - startTime)) *

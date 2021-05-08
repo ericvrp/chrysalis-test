@@ -1,6 +1,7 @@
 const { BALANCE_REFRESH_INTERVAL, N_ACCOUNTS } = require("./constants");
 
 const showBalances = async (
+  argv,
   client,
   seed,
   balances = [],

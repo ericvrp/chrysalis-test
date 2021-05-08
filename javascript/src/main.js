@@ -6,62 +6,54 @@ const { dustAllowanceConsolidator } = require("./dustAllowanceConsolidator");
 const { showBalances } = require("./showBalances");
 const { dataSpam } = require("./dataSpam");
 const { valueSpam } = require("./valueSpam");
-const { N_ACCOUNTS } = require("./constants");
+const { ACCOUNTINDEX_WITH_ALLOWANCE, NODE } = require("./constants");
 
+const argv = require("yargs/yargs")(process.argv.slice(2)) // https://yargs.js.org and https://github.com/yargs/yargs/blob/master/docs/examples.md
+  .default("mqtt", true)
+  .default("showbalances", true)
+  .default("valuespam", true)
+  .default("dataspam", true)
+  .default("consolidator", true)
+  .default("network", "mainnet").argv;
+// console.log(argv); // --help
+
+//
 const main = async () => {
-  let client = new ClientBuilder();
-  if (process.env.IOTA_NETWORK)
-    client = client.network(process.env.IOTA_NETWORK);
-  if (process.env.IOTA_NODE) client = client.node(process.env.IOTA_NODE);
-  client = client.build();
+  let client = new ClientBuilder()
+    .network(argv.network)
+    .node(NODE[argv.network])
+    .build();
 
   const info = await client.getInfo();
   console.log(`\n= = = Connected to ${info.nodeinfo.networkId} = = =\n`);
   // console.log(info);
 
-  if (process.env.IOTA_MQTT !== "true") {
-    console.warn("Skipping MQTT");
-  } else {
-    mqtt(client);
-  }
-
   const mnemonic = process.env.IOTA_MNEMONIC;
-  if (!mnemonic || mnemonic.split(" ").length !== 24) {
-    console.warn(
-      "Skipping code that uses IOTA_MNEMONIC because it's not the required 24-words seedphrase"
-    );
-  } else {
-    const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
-    // console.log("seed1", seed);
 
-    // const seed2 = client.mnemonicToHexSeed(mnemonic);
-    // console.log("seed2", seed2);
+  const seed = (await mnemonicToSeed(mnemonic)).toString("hex");
+  // console.log("seed1", seed);
 
-    if (
-      !process.env.IOTA_ADDRESS_WITH_ALLOWANCE ||
-      !process.env.IOTA_ACCOUNTINDEX_WITH_ALLOWANCE
-    ) {
-      console.warn("Skipping dustAllowanceConsolidator");
-    } else {
-      dustAllowanceConsolidator(client, seed);
-    }
+  // const seed2 = client.mnemonicToHexSeed(mnemonic);
+  // console.log("seed2", seed2);
 
-    showBalances(client, seed);
-
-    if (
-      process.env.IOTA_VALUESPAM !== "true" ||
-      !process.env.IOTA_ADDRESS_WITH_ALLOWANCE
-    ) {
-      console.warn("Skipping valueSpam");
-    } else {
-      valueSpam(client, seed);
-    }
+  if (argv.consolidator) {
+    dustAllowanceConsolidator(argv, client, seed);
   }
 
-  if (process.env.IOTA_DATASPAM !== "true") {
-    console.warn("Skipping dataSpam");
-  } else {
-    dataSpam(client);
+  if (argv.showbalances) {
+    showBalances(argv, client, seed);
+  }
+
+  if (argv.valuespam) {
+    valueSpam(argv, client, seed);
+  }
+
+  if (argv.dataspam) {
+    dataSpam(argv, client);
+  }
+
+  if (argv.mqtt) {
+    mqtt(argv, client);
   }
 };
 

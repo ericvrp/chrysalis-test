@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -q src/main.js",
+    "help": "node src/main.js --help",
+    "start": "nodemon -q src/main.js --no-mqtt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,6 +13,7 @@
   "dependencies": {
     "@iota/client": "^0.3.1",
     "bip39": "^3.0.4",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "yargs": "^17.0.1"
   }
 }
