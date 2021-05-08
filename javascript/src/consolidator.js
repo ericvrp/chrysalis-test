@@ -99,13 +99,7 @@ const consolidator = async (
 
   setTimeout(
     () =>
-      dustAllowanceConsolidator(
-        client,
-        seed,
-        allowance,
-        consolidateThreshold,
-        false
-      ),
+      consolidator(argv, client, seed, allowance, consolidateThreshold, false),
     argv["consolidator-interval"] * SECOND
   );
 };

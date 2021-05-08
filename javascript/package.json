@@ -6,6 +6,9 @@
   "scripts": {
     "help": "node src/main.js --help",
     "start": "nodemon -q src/main.js --no-mqtt",
+    "dataspam": "nodemon -q src/main.js  --no-mqtt --no-valuespam --no-getinfo --no-showbalances --dataspam-interval 0 --no-consolidator",
+    "valuespam": "nodemon -q src/main.js --no-mqtt --no-dataspam --no-getinfo --no-showbalances --valuespam-interval 0",
+    "consolidator": "nodemon -q src/main.js --no-mqtt --no-dataspam --no-getinfo --no-showbalances --no-valuespam",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
