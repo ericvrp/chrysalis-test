@@ -5,14 +5,14 @@ const { ADDRESS_WITH_ALLOWANCE } = require("./constants");
 
 const mqtt = async (argv, client) => {
   const topics = [
-    // `milestones/confirmed`,
-    `milestones/latest`,
+    `milestones/confirmed`,
+    // `milestones/latest`,
     // `addresses/${ADDRESS_WITH_ALLOWANCE[argv.network]}/outputs`,
     // `messages/indexation/${Buffer.from(argv.messageIndex).toString(
     //   "hex"
     // )}`,
   ];
-  // console.log("MQTT subscribes to topics", topics);
+  !argv.quiet && console.log("MQTT subscribes to topics", topics);
 
   const lastTopicPayload = {};
 

@@ -7,7 +7,10 @@ const showBalances = async (
   balances = [],
   showDetails = false
 ) => {
-  // console.log("showBalances");
+  if (!argv.quiet) {
+    showDetails = true;
+    console.log("showBalances");
+  }
 
   // testnet faucet https://faucet.testnet.chrysalis2.com and https://faucet.tanglekit.de/
   for (let accountIndex = 0; accountIndex < argv.nAccounts; accountIndex++) {

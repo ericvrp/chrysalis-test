@@ -4,19 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "help": "node src/main.js --help",
-    "start": "nodemon        -q src/main.js",
-    "dataspam": "nodemon     -q src/main.js --no-mqtt --no-valuespam --no-getinfo --no-showbalances --no-consolidator --dataspam-interval=0",
-    "valuespam": "nodemon    -q src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-consolidator --valuespam-interval=0",
-    "consolidator": "nodemon -q src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-valuespam",
-    "other": "nodemon -q src/main.js --no-dataspam --no-getinfo --no-valuespam --no-consolidator",
+    "help": "node         src/main.js --help",
+    "start": "node        src/main.js",
+    "no-quiet": "node     src/main.js --no-quiet",
+    "dataspam": "node     src/main.js --no-mqtt --no-valuespam --no-getinfo --no-showbalances --no-consolidator --dataspam-interval=0",
+    "valuespam": "node    src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-consolidator --valuespam-interval=0",
+    "consolidator": "node src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-valuespam",
+    "other": "node        src/main.js --no-dataspam --no-valuespam --no-consolidator",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@iota/client": "^0.3.1",
-    "bip39": "^3.0.4",
+    "@iota/client": "^0.4.0",
     "dotenv": "^8.2.0",
     "yargs": "^17.0.1"
   }

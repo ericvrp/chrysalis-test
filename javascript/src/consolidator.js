@@ -9,7 +9,8 @@ const consolidator = async (
   consolidateThreshold = 0.7,
   forceConsolidation = true
 ) => {
-  // console.log("consolidator");
+  !argv.quiet && console.log("consolidator");
+
   const addressWithAllowance = ADDRESS_WITH_ALLOWANCE[argv.network];
 
   for (; ; forceConsolidation = false) {
@@ -52,9 +53,10 @@ const consolidator = async (
         outputs.length > 1 &&
         (forceConsolidation || outputs.length >= consolidateThresholdCount)
       ) {
-        // console.log(
-        //   `https://explorer.iota.org/mainnet/addr/${addressWithAllowance} (consolidating allowance)`
-        // );
+        !argv.quiet &&
+          console.log(
+            `https://explorer.iota.org/mainnet/addr/${addressWithAllowance} (consolidating allowance)`
+          );
 
         let consolidateMessage = client
           .message()
@@ -78,11 +80,12 @@ const consolidator = async (
           `https://explorer.iota.org/mainnet/addr/${addressWithAllowance}    (consolidated ${outputs.length} outputs)`
         );
       } else {
-        // console.log(
-        //   `Still ${
-        //     consolidateThresholdCount - outputs.length
-        //   } outputs left before consolidation`
-        // );
+        !argv.quiet &&
+          console.log(
+            `Still ${
+              consolidateThresholdCount - outputs.length
+            } outputs left before consolidation`
+          );
       }
     } catch (err) {
       console.error(err.message);
