@@ -36,9 +36,9 @@ const main = async () => {
     .node(NODE[argv.network])
     .build();
 
-  const info = await client.getInfo();
-  console.log(`\n= = = Connected to ${info.nodeinfo.networkId} = = =\n`);
-  !argv.quiet && console.log(info);
+  console.log(
+    `\n= = = Connected to ${NODE[argv.network]} on ${argv.network} = = =\n`
+  );
 
   const seed = client.mnemonicToHexSeed(process.env.IOTA_MNEMONIC);
   !argv.quiet && console.log(seed);

@@ -8,7 +8,7 @@ const showBalances = async (
   showDetails = false
 ) => {
   if (!argv.quiet) {
-    showDetails = true;
+    // showDetails = true;
     console.log("showBalances");
   }
 
