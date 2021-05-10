@@ -1,16 +1,8 @@
 const { sleepSeconds, throttle } = require("./utils");
 
-const showBalances = async (
-  argv,
-  client,
-  seed,
-  balances = [],
-  showDetails = false
-) => {
-  if (!argv.quiet) {
-    // showDetails = true;
-    console.log("showBalances");
-  }
+//
+const showInitialAddressPerAccount = async (argv, client, seed) => {
+  !argv.quiet && console.log("showInitialAddressPerAccount");
 
   // testnet faucet https://faucet.testnet.chrysalis2.com and https://faucet.tanglekit.de/
   for (let accountIndex = 0; accountIndex < argv.nAccounts; accountIndex++) {
@@ -21,8 +13,41 @@ const showBalances = async (
       .get();
     console.log(`Account #${accountIndex} starts with address ${addresses[0]}`);
   }
+};
 
-  for (;;) {
+//
+const showBalancesDetails = async (argv, client, seed) => {
+  !argv.quiet && console.log("showBalancesDetails");
+
+  for (let accountIndex = 0; accountIndex < argv.nAccounts; accountIndex++) {
+    const addresses = await client
+      .getAddresses(seed)
+      .accountIndex(accountIndex)
+      .range(0, 20)
+      // .include_internal()
+      .get();
+
+    for (const addressIndex in addresses) {
+      const address = addresses[addressIndex];
+      client.getAddressBalance(address).then((addressBalance) => {
+        if (!addressBalance.balance) return;
+        console.log(
+          `Account #${accountIndex} Address #${addressIndex} (${address}) has balance ${
+            addressBalance.balance
+          } (${
+            addressBalance.dust_allowed ? "dust allowed" : "no dust allowed"
+          })`
+        );
+      });
+    }
+  }
+};
+
+//
+const showBalances = async (argv, client, seed) => {
+  !argv.quiet && console.log("showBalances");
+
+  for (let balances = []; ; ) {
     try {
       let balanceChanged = false;
 
@@ -40,31 +65,6 @@ const showBalances = async (
         if (balance !== balances[accountIndex]) balanceChanged = true;
 
         balances[accountIndex] = balance;
-
-        if (showDetails) {
-          const addresses = await client
-            .getAddresses(seed)
-            .accountIndex(accountIndex)
-            .range(0, 20)
-            // .include_internal()
-            .get();
-
-          for (const addressIndex in addresses) {
-            const address = addresses[addressIndex];
-            client.getAddressBalance(address).then((addressBalance) => {
-              if (!addressBalance.balance) return;
-              console.log(
-                `Address #${addressIndex} of account #${accountIndex} (${address}) has balance ${
-                  addressBalance.balance
-                } (${
-                  addressBalance.dust_allowed
-                    ? "dust allowed"
-                    : "no dust allowed"
-                })`
-              );
-            });
-          }
-        }
       } // next accountIndex
 
       if (balanceChanged) {
@@ -83,4 +83,9 @@ const showBalances = async (
   }
 };
 
-module.exports = { showBalances };
+//
+module.exports = {
+  showInitialAddressPerAccount,
+  showBalancesDetails,
+  showBalances,
+};

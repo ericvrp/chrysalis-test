@@ -1,26 +1,34 @@
-const { ONE_MIOTA, ADDRESS_WITH_ALLOWANCE } = require("./constants");
+const { ONE_MIOTA } = require("./constants");
 const { sleepSeconds, throttle } = require("./utils");
 
 const consolidator = async (
   argv,
   client,
   seed,
-  allowance = ONE_MIOTA,
+  addressWithAllowance,
+  allowance,
   consolidateThreshold = 0.7,
   forceConsolidation = true
 ) => {
   !argv.quiet && console.log("consolidator");
 
-  const addressWithAllowance = ADDRESS_WITH_ALLOWANCE[argv.network];
+  if (!addressWithAllowance || !allowance) {
+    return console.error(
+      `error: consolidator incorrect input ${addressWithAllowance} ${allowance}`
+    );
+  }
+  // console.log(addressWithAllowance, allowance);
 
   for (; ; forceConsolidation = false) {
     try {
       const addressBalance = await client.getAddressBalance(
         addressWithAllowance
       );
-      // console.log(addressBalance);
+      // console.log("addressWithAllowance", addressBalance);
 
       if (addressBalance.balance < allowance) {
+        // console.log("funding");
+
         await client
           .message()
           .index(argv.messageIndex)
@@ -40,6 +48,7 @@ const consolidator = async (
       }
 
       const outputs = await client.findOutputs([], [addressWithAllowance]);
+      // console.log(outputs);
 
       const consolidateThresholdCount =
         Math.min(
@@ -76,6 +85,7 @@ const consolidator = async (
           .dustAllowanceOutput(addressWithAllowance, addressBalance.balance)
           .submit();
 
+        //
         console.log(
           `https://explorer.iota.org/mainnet/addr/${addressWithAllowance}    (consolidated ${outputs.length} outputs)`
         );

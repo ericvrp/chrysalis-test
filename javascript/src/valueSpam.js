@@ -1,8 +1,14 @@
-const { ONE_IOTA, ADDRESS_WITH_ALLOWANCE } = require("./constants");
 const { sleepSeconds, throttle } = require("./utils");
 
-const valueSpam = async (argv, client, seed, amount = ONE_IOTA) => {
+const valueSpam = async (argv, client, seed, addressWithAllowance, amount) => {
   !argv.quiet && console.log("valueSpam");
+
+  if (!addressWithAllowance || !amount) {
+    return console.error(
+      `error: valueSpam incorrect input ${addressWithAllowance} ${amount}`
+    );
+  }
+  // console.log(addressWithAllowance, amount);
 
   for (;;) {
     try {
@@ -11,7 +17,7 @@ const valueSpam = async (argv, client, seed, amount = ONE_IOTA) => {
         .index(argv.messageIndex)
         .data(`valueSpam ${amount}i @${new Date().toISOString()}`)
         .seed(seed)
-        .output(ADDRESS_WITH_ALLOWANCE[argv.network], amount)
+        .output(addressWithAllowance, amount)
         .submit();
 
       console.log(

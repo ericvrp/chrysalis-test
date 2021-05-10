@@ -2,11 +2,15 @@ require("dotenv").config({ path: "../.env" });
 const { ClientBuilder } = require("@iota/client"); // https://client-lib.docs.iota.org/libraries/nodejs
 const { mqtt } = require("./mqtt");
 const { consolidator } = require("./consolidator");
-const { showBalances } = require("./showBalances");
+const {
+  showInitialAddressPerAccount,
+  showBalancesDetails,
+  showBalances,
+} = require("./showBalances");
 const { getInfo } = require("./getInfo");
 const { dataSpam } = require("./dataSpam");
 const { valueSpam } = require("./valueSpam");
-const { NODE } = require("./constants");
+const { NODE, ONE_IOTA, ONE_MIOTA } = require("./constants");
 
 const argv = require("yargs/yargs")(process.argv.slice(2)) // https://yargs.js.org and https://github.com/yargs/yargs/blob/master/docs/examples.md
   .default("quiet", true)
@@ -43,16 +47,35 @@ const main = async () => {
   const seed = client.mnemonicToHexSeed(process.env.IOTA_MNEMONIC);
   !argv.quiet && console.log(seed);
 
+  const addresses = await client
+    .getAddresses(seed)
+    .accountIndex(parseInt(argv.accountIndexWithDustAllowance))
+    .range(0, 20)
+    .get();
+  let addressWithAllowance = addresses[0]; // fall back to the initial address when no balance is found
+  // console.log(addresses);
+  for (const addressIndex in addresses) {
+    const address = addresses[addressIndex];
+    const addressBalance = await client.getAddressBalance(address);
+    if (addressBalance.balance) {
+      addressWithAllowance = address;
+      break;
+    }
+  }
+  // console.log(addressWithAllowance);
+
   if (argv.consolidator) {
-    consolidator(argv, client, seed);
+    consolidator(argv, client, seed, addressWithAllowance, ONE_MIOTA);
   }
 
   if (argv.showbalances) {
+    // showInitialAddressPerAccount(argv, client, seed);
+    // showBalancesDetails(argv, client, seed);
     showBalances(argv, client, seed);
   }
 
   if (argv.valuespam) {
-    valueSpam(argv, client, seed);
+    valueSpam(argv, client, seed, addressWithAllowance, ONE_IOTA);
   }
 
   if (argv.dataspam) {
