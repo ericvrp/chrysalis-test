@@ -44,6 +44,10 @@ const main = async () => {
     `\n= = = Connected to ${NODE[argv.network]} on ${argv.network} = = =\n`
   );
 
+  console.log(
+    `${process.env.IOTA_MNEMONIC.split(" ").length} words in mnemonic`
+  );
+
   const seed = client.mnemonicToHexSeed(process.env.IOTA_MNEMONIC);
   !argv.quiet && console.log(seed);
 
