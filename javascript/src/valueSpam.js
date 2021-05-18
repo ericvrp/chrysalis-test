@@ -5,7 +5,7 @@ const valueSpam = async (argv, client, seed, addressWithAllowance, amount) => {
 
   if (!addressWithAllowance || !amount) {
     return console.error(
-      `error: valueSpam incorrect input ${addressWithAllowance} ${amount}`
+      `valueSpam error: incorrect input ${addressWithAllowance} ${amount}`
     );
   }
   // console.log(addressWithAllowance, amount);
@@ -24,7 +24,7 @@ const valueSpam = async (argv, client, seed, addressWithAllowance, amount) => {
         `https://explorer.iota.org/${argv.network}/message/${message.messageId} (${amount}i transaction)`
       );
     } catch (err) {
-      console.error(err.message);
+      console.error("valueSpam error:", err.message);
       await throttle();
     }
 

@@ -18,7 +18,7 @@ const mqtt = async (argv, client) => {
     .subscriber()
     .topics(topics)
     .subscribe((err, data) => {
-      if (err) return console.error(err.message);
+      if (err) return console.error("mqtt error:", err.message);
 
       if (lastTopicPayload[data.payload] === data.payload) return;
 

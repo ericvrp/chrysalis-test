@@ -44,9 +44,8 @@ const main = async () => {
     `\n= = = Connected to ${NODE[argv.network]} on ${argv.network} = = =\n`
   );
 
-  console.log(
-    `${process.env.IOTA_MNEMONIC.split(" ").length} words in mnemonic`
-  );
+  const nWords = process.env.IOTA_MNEMONIC.split(" ").length;
+  if (nWords !== 24) throw new Error(`${nWords} words in mnemonic`);
 
   const seed = client.mnemonicToHexSeed(process.env.IOTA_MNEMONIC);
   !argv.quiet && console.log(seed);
@@ -97,4 +96,4 @@ const main = async () => {
 
 main()
   .then((result) => result && console.log(result))
-  .catch((err) => console.error(err.message));
+  .catch((err) => console.error("error in main:", err.message));

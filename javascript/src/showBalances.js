@@ -75,7 +75,7 @@ const showBalances = async (argv, client, seed) => {
         );
       }
     } catch (err) {
-      console.error(err.message);
+      console.error("showBalances error:", err.message);
       await throttle();
     }
 

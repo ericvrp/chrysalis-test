@@ -14,7 +14,7 @@ const consolidator = async (
 
   if (!addressWithAllowance || !allowance) {
     return console.error(
-      `error: consolidator incorrect input ${addressWithAllowance} ${allowance}`
+      `consolidator error: incorrect input ${addressWithAllowance} ${allowance}`
     );
   }
   // console.log(addressWithAllowance, allowance);
@@ -98,7 +98,7 @@ const consolidator = async (
           );
       }
     } catch (err) {
-      console.error(err.message);
+      console.error("consolidator error:", err.message);
       await throttle();
     }
 

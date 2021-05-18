@@ -12,7 +12,7 @@ const getInfo = async (argv, client) => {
         `https://explorer.iota.org/${argv.network}/indexed/${argv.messageIndex} (${info.nodeinfo.messagesPerSecond} MPS)`
       );
     } catch (err) {
-      console.error(err.message);
+      console.error("getInfo error:", err.message);
       await throttle();
     }
 

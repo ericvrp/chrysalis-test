@@ -25,7 +25,7 @@ const dataSpam = async (argv, client) => {
         ).toFixed(2)} MPS data)`
       );
     } catch (err) {
-      console.error(err.message);
+      console.error("dataSpam error:", err.message);
       await throttle();
     }
 
