@@ -10,7 +10,7 @@ const mqtt = async (
   const topics = [
     `milestones/confirmed`,
     // `milestones/latest`,
-    `addresses/${addressWithAllowance}/outputs`,
+    // `addresses/${addressWithAllowance}/outputs`,
     // `messages/indexation/${argv.messageIndex}`, // Buffer.from(argv.messageIndex).toString("hex")
   ];
   argv.verbose && console.log("MQTT subscribes to topics", topics);

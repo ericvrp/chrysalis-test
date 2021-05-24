@@ -47,9 +47,6 @@ const main = async () => {
     `\n= = = Connected to ${NODE[argv.network]} on ${argv.network} = = =\n`
   );
 
-  const nWords = process.env.IOTA_MNEMONIC.split(" ").length;
-  // if (nWords !== 24) throw new Error(`${nWords} words in mnemonic`);
-
   const seed = client.mnemonicToHexSeed(process.env.IOTA_MNEMONIC);
   argv.verbose && console.log(seed);
 
