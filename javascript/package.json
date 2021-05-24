@@ -5,18 +5,19 @@
   "main": "index.js",
   "scripts": {
     "help": "node src/main.js --help",
-    "start": "nodemon        -q src/main.js",
-    "no-quiet": "nodemon     -q src/main.js --no-quiet",
-    "dataspam": "nodemon     -q src/main.js --no-mqtt --no-valuespam --no-getinfo --no-showbalances --no-consolidator --dataspam-interval=0",
-    "valuespam": "nodemon    -q src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-consolidator --valuespam-interval=0",
-    "consolidator": "nodemon -q src/main.js --no-mqtt --no-dataspam  --no-getinfo --no-showbalances --no-valuespam",
-    "other": "nodemon        -q src/main.js --no-dataspam --no-valuespam --no-consolidator",
+    "start": "nodemon        -q src/main.js --valuespam=true --dataspam=true --consolidator=true --showbalances=true --getinfo=true --mqtt=true",
+    "verbose": "nodemon      -q src/main.js --valuespam=true --dataspam=true --consolidator=true --showbalances=true --getinfo=true --mqtt=true --verbose=true",
+    "dataspam": "nodemon     -q src/main.js --dataspam=true --dataspam-interval=0",
+    "valuespam": "nodemon    -q src/main.js --consolidator=true --valuespam=true --valuespam-interval=0",
+    "mqtt": "nodemon         -q src/main.js --mqtt=true",
+    "showbalances": "nodemon -q src/main.js --showbalances=true",
+    "getinfo": "nodemon      -q src/main.js --getinfo=true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@iota/client": "^0.4.0",
+    "@iota/client": "^0.5.0",
     "dotenv": "^8.2.0",
     "yargs": "^17.0.1"
   },

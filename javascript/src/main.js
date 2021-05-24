@@ -13,18 +13,20 @@ const { valueSpam } = require("./valueSpam");
 const { NODE, ONE_IOTA, ONE_MIOTA } = require("./constants");
 
 const argv = require("yargs/yargs")(process.argv.slice(2)) // https://yargs.js.org and https://github.com/yargs/yargs/blob/master/docs/examples.md
-  .default("quiet", true)
-  .default("mqtt", true)
-  .default("showbalances", true)
+  .default("verbose", false)
+  .default("mqtt", false)
+  .default("showbalances", false)
+  .default("valuespam", false)
+  .default("dataspam", false)
+  .default("getinfo", false)
+  .default("consolidator", false)
+
   .default("showbalances-interval", 300)
-  .default("valuespam", true)
   .default("valuespam-interval", 10)
-  .default("dataspam", true)
   .default("dataspam-interval", 0)
-  .default("getinfo", true)
   .default("getinfo-interval", 120)
-  .default("consolidator", true)
   .default("consolidator-interval", 60)
+
   .default("network", "mainnet")
   .default("messageIndex", "chrysalis-test")
   .default("accountIndexWithDustAllowance", 1)
@@ -33,11 +35,12 @@ const argv = require("yargs/yargs")(process.argv.slice(2)) // https://yargs.js.o
 
 //
 const main = async () => {
-  !argv.quiet && console.log(argv);
+  argv.verbose && console.log(argv);
 
   let client = new ClientBuilder()
     .network(argv.network)
     .node(NODE[argv.network])
+    .brokerOptions({ useWs: false }) // this is required on mainnet for now until Firefly uses websocket by default and Nodes have WS support enabled by default
     .build();
 
   console.log(
@@ -45,10 +48,10 @@ const main = async () => {
   );
 
   const nWords = process.env.IOTA_MNEMONIC.split(" ").length;
-  if (nWords !== 24) throw new Error(`${nWords} words in mnemonic`);
+  // if (nWords !== 24) throw new Error(`${nWords} words in mnemonic`);
 
   const seed = client.mnemonicToHexSeed(process.env.IOTA_MNEMONIC);
-  !argv.quiet && console.log(seed);
+  argv.verbose && console.log(seed);
 
   const addresses = await client
     .getAddresses(seed)
@@ -90,7 +93,7 @@ const main = async () => {
   }
 
   if (argv.mqtt) {
-    mqtt(argv, client);
+    mqtt(argv, client, addressWithAllowance);
   }
 };
 

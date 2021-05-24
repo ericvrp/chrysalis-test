@@ -2,7 +2,7 @@ const { sleepSeconds, throttle } = require("./utils");
 
 //
 const showInitialAddressPerAccount = async (argv, client, seed) => {
-  !argv.quiet && console.log("showInitialAddressPerAccount");
+  argv.verbose && console.log("showInitialAddressPerAccount");
 
   // testnet faucet https://faucet.testnet.chrysalis2.com and https://faucet.tanglekit.de/
   for (let accountIndex = 0; accountIndex < argv.nAccounts; accountIndex++) {
@@ -17,7 +17,7 @@ const showInitialAddressPerAccount = async (argv, client, seed) => {
 
 //
 const showBalancesDetails = async (argv, client, seed) => {
-  !argv.quiet && console.log("showBalancesDetails");
+  argv.verbose && console.log("showBalancesDetails");
 
   for (let accountIndex = 0; accountIndex < argv.nAccounts; accountIndex++) {
     const addresses = await client
@@ -45,7 +45,7 @@ const showBalancesDetails = async (argv, client, seed) => {
 
 //
 const showBalances = async (argv, client, seed) => {
-  !argv.quiet && console.log("showBalances");
+  argv.verbose && console.log("showBalances");
 
   for (let balances = []; ; ) {
     try {

@@ -1,3 +1,7 @@
+# note
+
+This part of my code is not well maintained. More active development can be found in the Javascript folder!
+
 # install and update rust tools
 
 > rustup update stable

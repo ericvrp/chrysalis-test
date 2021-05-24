@@ -1,7 +1,7 @@
 const { sleepSeconds, throttle } = require("./utils");
 
 const valueSpam = async (argv, client, seed, addressWithAllowance, amount) => {
-  !argv.quiet && console.log("valueSpam");
+  argv.verbose && console.log("valueSpam");
 
   if (!addressWithAllowance || !amount) {
     return console.error(

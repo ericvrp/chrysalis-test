@@ -1,7 +1,7 @@
 const { sleepSeconds, throttle } = require("./utils");
 
 const dataSpam = async (argv, client) => {
-  !argv.quiet && console.log("dataSpam");
+  argv.verbose && console.log("dataSpam");
 
   const startTime = new Date(); // start the clock once getInfo has finished
   let nSpammedMessages = 0;

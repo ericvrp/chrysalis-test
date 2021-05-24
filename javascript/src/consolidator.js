@@ -10,7 +10,7 @@ const consolidator = async (
   consolidateThreshold = 0.7,
   forceConsolidation = true
 ) => {
-  !argv.quiet && console.log("consolidator");
+  argv.verbose && console.log("consolidator");
 
   if (!addressWithAllowance || !allowance) {
     return console.error(
@@ -62,7 +62,7 @@ const consolidator = async (
         outputs.length > 1 &&
         (forceConsolidation || outputs.length >= consolidateThresholdCount)
       ) {
-        !argv.quiet &&
+        argv.verbose &&
           console.log(
             `https://explorer.iota.org/mainnet/addr/${addressWithAllowance} (consolidating allowance)`
           );
@@ -90,7 +90,7 @@ const consolidator = async (
           `https://explorer.iota.org/mainnet/addr/${addressWithAllowance}    (consolidated ${outputs.length} outputs)`
         );
       } else {
-        !argv.quiet &&
+        argv.verbose &&
           console.log(
             `Still ${
               consolidateThresholdCount - outputs.length
